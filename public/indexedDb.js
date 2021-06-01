@@ -60,3 +60,14 @@ const checkDatabase = () => {
         }
     };
 };
+
+//on success
+request.onsuccess = event => {
+    console.log('success');
+    db = event.target.result;
+
+    if(navigator.onLine) {
+        console.log('Backend online');
+        checkDatabase();
+    }
+};
