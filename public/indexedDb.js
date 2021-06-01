@@ -71,3 +71,14 @@ request.onsuccess = event => {
         checkDatabase();
     }
 };
+
+//save record
+const saveRecord = record => {
+    console.log('Attempting to save record');
+
+    const transaction = db.transaction(['BudgetStore'], 'readwrite');
+
+    const store = transaction.objectStore('BudgetStore');
+
+    store.add(record);
+};
