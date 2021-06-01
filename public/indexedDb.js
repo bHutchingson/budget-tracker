@@ -24,3 +24,39 @@ request.onupgradeneeded = event => {
 request.onerror = event => {
     console.log(`ERROR ${event.target.errorCode}`);
 };
+
+//check database
+const checkDatabase = () => {
+    
+    let transaction = db.transaction(['BudgetStore'], 'readwrite');
+
+    const store = transaction.objectStore('BudgetStore');
+
+    const getAll = store.getAll();
+
+    getAll.onsuccess = () => {
+        if(getAll.result.length > 0) {
+            fetch('/api/transaction/bulk', {
+                method: 'POST',
+                body: JSON.stringify(getAll.result),
+                headers: {
+                    Accept: 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                response.json();
+            })
+            .then(res => {
+                if(res.length !== 0) {
+                    transaction = db.transaction(['BudgetStore'], 'readwrite');
+
+                    const currentStore = transaction.objectStore('BudgetStore');
+
+                    currentStore.clear();
+                    console.log('Store is cleared');
+                }
+            })
+        }
+    };
+};
