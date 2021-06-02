@@ -2,7 +2,7 @@ let db;
 let budgetVersion;
 
 //Create new db request
-const request = indexedDB.open('BudgetDB', budgetVersion || 21);
+const request = indexedDB.open('BudgetDB', budgetVersion || 17);
 
 //on upgrade
 request.onupgradeneeded = event => {
@@ -82,3 +82,5 @@ const saveRecord = record => {
 
     store.add(record);
 };
+
+window.addEventListener('online', checkDatabase);

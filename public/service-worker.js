@@ -1,21 +1,18 @@
 const FILES_TO_CACHE = [
     '/',
     '/index.html',
-    '/style.css',
-    'https://fonts.googleapis.com/css?family=Istok+Web|Montserrat:800&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css',
+    '/styles.css',
+    '/indexedDb.js',
 ];
 
 const PRECACHE = 'precache-v1';
-const RUNTIME = 'runtime';
+const RUNTIME = 'runtime-cache';
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches
             .open(PRECACHE)
-            .then(cache => {
-                cache.addAll(FILES_TO_CACHE)
-            })
+            .then(cache => cache.addAll(FILES_TO_CACHE))
             .then(self.skipWaiting())
     );
 });
@@ -42,18 +39,20 @@ self.addEventListener('active', event => {
 self.addEventListener('fetch', event => {
     if (event.request.url.startsWith(self.location.origin)) {
         event.respondWith(
-            caches.match(event.request).then(cachedResponse => {
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-
-                return caches.open(RUNTIME).then(cache => {
+            caches.open(RUNTIME).then(cache => {
+                
                     return fetch(event.request).then(response => {
-                        return cache.put(event.request, response.clone()).then(() => {
-                            return response;
-                        });
-                    });
-                });
+                        if (response.status = 200) {
+                            return cache.put(event.request.url, response.clone()).then(() => {
+                                return response;
+                            });
+                        }
+                        
+                    })
+                    .catch((err) => {
+                        return cache.match(event.request)
+                    })
+                
             })
         );
     }
