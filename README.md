@@ -20,7 +20,8 @@
   
   ## Screenshots
 
-    ![screenshot](assets/screenshot.png)
+![Budget Tracker deployed screenshot](./assets/screenshot.png)
+
   
   ## Dependencies
 
